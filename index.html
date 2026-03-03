@@ -66,15 +66,15 @@
 <body>
 
     <div class="header">
-        <h2>🎬 베스트 크리에이티브 투표</h2>
+        <h2>🎬 ADZ 베스트 크리에이티브 투표</h2>
         
         <div style="max-width: 800px; margin: 20px auto; text-align: left; background: #fff; padding: 25px; border-radius: 12px; border: 1px solid #e1e4e8; line-height: 1.6; font-size: 0.95rem;">
             <p style="margin-top: 0;">격월로 진행되는 베스트 크리에이티브 온라인 투표에 오신 여러분 환영합니다.<br>
-            후보작은 <b>2025년 11~12월에 온에어된 광고 약 4,000여 개를 선별하여 30개의 광고가 선정</b>되었습니다.</p>
+            후보작은 <b>2026년 1~2월에 온에어된 광고 약 4,000여 개를 선별하여 30개의 광고가 선정</b>되었습니다.</p>
             
-            <p>온라인 투표를 통해 30개 중 10개의 광고를 선정, 내부 심사를 통해 최종 1개작을 선정합니다.<br>
-            추후 선정된 베스트 크리에이티브에 대한 시상 및 인터뷰가 진행될 예정이며,<br>
-            인터뷰는 <b>ADZ 1/2월호</b>에서 확인할 수 있습니다.</p>
+            <p>온라인 투표를 통해 30개 중 10개 이하 광고를 선정, 내부 심사를 통해 최종 1개작을 선정합니다.<br>
+            추후 선정된 베스트 크리에이티브는 2026년 대한민국광고대상에서 예심없이 본심에 오르며, 해당 크리에이티브의 담당 팀 인터뷰가 진행됩니다.<br>
+            인터뷰는 <b>ADZ 3/4월호</b>에서 확인할 수 있습니다.</p>
             
             <div style="background: #eef7ff; padding: 15px; border-radius: 8px; border-left: 5px solid #007bff; margin: 20px 0;">
                 <b style="color: #0056b3; font-size: 1.1rem;">🗳 투표 방법 및 절차</b>
@@ -86,7 +86,7 @@
             </div>
 
             <p style="text-align: center; background: #f8f9fa; padding: 10px; border-radius: 5px; font-weight: bold; color: #d63384; margin-bottom: 0;">
-                ※ 투표기간: 2026년 2.20(금) 09시 ~ 2.24(화) 18시까지
+                ※ 투표기간: 2026년 3.3(화) 12시 ~ 3.8(일) 18시까지
             </p>
         </div>
     </div>
@@ -99,39 +99,38 @@
     // 로컬 스토리지에서 투표 횟수 불러오기
     let voteCount = parseInt(localStorage.getItem('myVoteCount')) || 0;
 
-    const adList = [
-        { id: "vhd10f_qd1g", title: "쓰면 쓸수록 커진다?" },
-        { id: "xIBZERDWe60", title: "마이 히어로북" },
-        { id: "i5O5vMt0g2A", title: "상쾌한 스틱 zero" },
-        { id: "DdBgBXmSI38", title: "진격의 멋쟁이사자처럼" },
-        { id: "rDvw2EU-T6M", title: "그냥 홈을 캡스홈으로" },
-        { id: "X4M-bGETfqQ", title: "업비트: 코인모으기" },
-        { id: "yFbxk2Z74l0", title: "어디서, 무엇을, 어떻게" },
-        { id: "miZ8jG2ByJw", title: "자산관리 참 쉽조?" },
-        { id: "UXVXrEZK7HY", title: "그곳이 어디라도, 걱정없이 Trip" },
-        { id: "tSmf3vJuGKc", title: "당신을 지키는 현대 SUV feat.이명화" },
-        { id: "czY-tJ8CttM", title: "겨울은 스초생, 스초생은 지금" },
-        { id: "_fvlaFaQLVU", title: "뭐든지 해낸다, 예쁘게" },
-        { id: "Z4_T0P3gGRc", title: "사랑, 가장 따뜻한 언어 안타티카" },
-        { id: "zxiXj-pfEic", title: "세상과 부딪힐수록 모험편" },
-        { id: "yfsR3TgRbTU", title: "누가 크리스마스에 롯데리아를 예약해?" },
-        { id: "1hC_8qqmwIM", title: "산타 이즈 커밍 투 타운" },
-        { id: "DYc9nWEKvSI", title: "Little Big Dream" },
-        { id: "ZmFt4ia1dkc", title: "2025년, 올 한해도 감사했습니다!" },
-        { id: "1p17iiPFzu4", title: "CJ제일제당x흑백요리사2" },
-        { id: "XC3M29xYGII", title: "딸의 일기예보" },
-        { id: "vH0uDa5oCLk", title: "엘엑씁니다" },
-        { id: "4xKoYph7Uv4", title: "VOICE WANTED" },
-        { id: "tYe4BgFEwzE", title: "미식가의 맛집검색편" },
-        { id: "LLIKWO_NxGM", title: "KT 통신 140년." },
-        { id: "PuArA_yXdyY", title: "떠나자. 알바몬으로" },
-        { id: "0bAnsAz_kxg", title: "바보야 문제는 단어야" },
-        { id: "dyg2O7qiccA", title: "기억의 해상도는 음악이 흐르면 흐릿한 기억이 선명해져" },
-        { id: "f5cGNiFlOpg", title: "보이지 않아도 생생한 축구" },
-        { id: "6G8GLrBt_zI", title: "AI 시대 취업, 너를 믿는 우릴 믿어" },
-        { id: "F1oo5VVNB-o", title: "현대자동차x이찬혁 2026 위시 카운트다운" }
-    ];
-
+  const adList = [
+    { id: "k3GnHTrEgJI", title: "[롯데리아] 롯데리아 또 이상한 거 한다!" },
+    { id: "J7Da0vG0IFo", title: "[메치니코프] 착한발효유 메치니코프" },
+    { id: "74URYTGpmD8", title: "[정관장] 활기마이트, 나만의 에너지 버튼을 누루다" },
+    { id: "5rXj0j4Er-c", title: "[거상] 추성훈 x 천하제일상 거상" },
+    { id: "NZ6LoLTGdDI", title: "[셀독] 당신 없이도 잘 돌아간다" },
+    { id: "pQU5vDVyFgs", title: "[패스트캠퍼스] AI? 지브리 프사밖에 안 해봤는데.." },
+    { id: "HU75HDLEX3w", title: "[호텔스컴바인] 호텔스 최저가 누리며 다음호텔 골랐스 컴바인" },
+    { id: "MZoPiknS_hE", title: "[올리브배러] 득근 타임처럼 즐거운 웰니스의 시작, OLIVE BETTER" },
+    { id: "lfGIucM7QI0", title: "[삼성카드] 삼.사.오, 설 쇼핑의 프로가 되는 주문" },
+    { id: "Kortc5G2iEY", title: "[KB국민카드] 이게 바로 국카대표급 카드 혜택, ALL YOU NEED!" },
+    { id: "u0h5l9e_Mwo", title: "[인스탁스 미니에보 시네마] 우리가 담긴 한 장의 즉석영화 | 커플편" },
+    { id: "pT5XvTJG_iU", title: "[카스] 잊혀지지 않을 우리들의 이야기를 위해" },
+    { id: "7ErW6QRifqI", title: "[신한금융그룹] 이 겨울, 신나게 한 번" },
+    { id: "xku9DZgy2ZA", title: "[갤럭시 북6 프로] 프리미엄의 급이 다른 AI 노트북" },
+    { id: "UEj6-Hd0IBc", title: "[불스원샷] 연비에 샷 불스원샷" },
+    { id: "Hl8acyJzKfg", title: "[새로] 너네가 싸워도 누군가는 새로 광고 해야하잖아(Feat: 침착맨)" },
+    { id: "x6zwT5riZkY", title: "[대교 써밋] 대교 써밋 스타런 with TWS" },
+    { id: "toAToNIZF24", title: "[KB손해보험 다이렉트] 속상도 일상이다, KB손해보험" },
+    { id: "S6lxVUakgg4", title: "[B 다이렉트샵] 광고주마저 당황시킨 광고 모델 이야기" },
+    { id: "bsyPsamFqKY", title: "[SK텔레콤] 카더가든의 플러팅만 182번째" },
+    { id: "sRNY5CAv_5k", title: "[SK텔레콤] Remember me, T membership MV" },
+    { id: "3Hk5dNF9eok", title: "[엔카] ↗이거 어디까지 끌려가는 거예↘요↗?" },
+    { id: "dKS26OH5qQM", title: "[삼천리자전거] 자전거를 더 즐겁게 2026 삼천리자전거" },
+    { id: "zm-b-RPFSRU", title: "[The kia EV] For Every Life | EV9편" },
+    { id: "tdqT4GWSmIw", title: "[바른생각] 발열형 콘돔의 등장♨ 올 겨울엔 핫핏" },
+    { id: "ctHpzRDQSHY", title: "[크랙] 누나.. 저 정말 오래 기다렸어요" },
+    { id: "NkYyfZVRotc", title: "[K-패스 체크카드] 매일의 루틴을 위한 토스뱅크 K-패스 체크카드" },
+    { id: "APJk5l4-9jM", title: "[CJ제일제당] 흑백요리사2 셰프 컬렉션 출시" },
+    { id: "0KXc4mEfrjU", title: "[생차] 생차와 함께 기분 좋은 시작을 시작하生 | 첫 수업편" },
+    { id: "oNJZSoK3imc", title: "[우리은행] 세상에 없던 혜택의 기술, 삼성월렛머니 우리 통장&적금" }
+];
     const app = document.getElementById('app');
 
     adList.forEach((ad, index) => {
