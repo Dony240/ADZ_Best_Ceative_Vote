@@ -67,7 +67,7 @@
         if (voteCount >= 5) {
             showModal('🎉 참여 완료', '이미 모든 투표(5회)를 마치셨습니다.<br>참여해주셔서 감사합니다!');
         } else if (!localStorage.getItem('welcomeSeen')) {
-            showModal('🗳 투표 안내', `환영합니다!<br>여러분에게는 <b>총 5번의 투표 기회</b>가 주어집니다. 가장 멋진 광고를 골라주세요!`);
+            showModal('🗳 투표 안내', `환영합니다!<br>여러분에게는 <b>총 5번의 투표 기회</b>가 주어집니다.<br>최고의 광고를 골라주세요!`);
             localStorage.setItem('welcomeSeen', 'true');
         } else {
             showModal('📊 투표 진행 중', `현재 <b>${voteCount}번</b> 투표하셨습니다.<br>남은 투표 기회는 <b>${5 - voteCount}번</b>입니다!`);
