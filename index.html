@@ -60,7 +60,7 @@
         }
         .vote-btn:hover { background: #0056b3; }
         .vote-btn:disabled { background: #ccc; cursor: not-allowed; }
-        .vote-btn.voted { background: #28a745; cursor: default; } /* 투표 완료 버튼 스타일 */
+        .vote-btn.voted { background: #28a745; cursor: default; }
     </style>
 </head>
 <body>
@@ -85,8 +85,11 @@
                 </ol>
             </div>
 
-            <p style="text-align: center; background: #f8f9fa; padding: 10px; border-radius: 5px; font-weight: bold; color: #d63384; margin-bottom: 0;">
+            <p style="text-align: center; background: #f8f9fa; padding: 10px; border-radius: 5px; font-weight: bold; color: #d63384; margin-bottom: 10px;">
                 ※ 투표기간: 2026년 3.3(화) 12시 ~ 3.8(일) 18시까지
+            </p>
+            <p style="text-align: center; font-size: 0.85rem; color: #666; margin: 0;">
+                ⚠️ 인스타그램/카톡에서 오류 발생 시, 우측 상단 [점 3개] 클릭 후 <br><b>'다른 브라우저로 열기'</b>(Chrome, Safari 등)를 이용해 주세요.
             </p>
         </div>
     </div>
@@ -135,13 +138,11 @@
 
     const app = document.getElementById('app');
 
-    // 리스트 생성 루프
     adList.forEach((ad, index) => {
         const card = document.createElement('div');
         card.className = 'ad-card';
         const displayIndex = String(index + 1).padStart(2, '0');
         
-        // 이미 투표한 항목인지 확인하여 버튼 상태 결정
         const hasVoted = votedIndices.includes(index);
         const btnText = hasVoted ? "투표 완료" : "투표하기";
         const btnClass = hasVoted ? "vote-btn voted" : "vote-btn";
@@ -162,7 +163,6 @@
     });
 
     function submitVote(title, index) {
-        // 투표 전 최종 횟수 다시 체크
         if (voteCount >= 5) {
             alert("이미 5번의 투표를 모두 완료하셨습니다. 참여해주셔서 감사합니다!");
             return;
@@ -181,9 +181,13 @@
         btn.disabled = true;
 
         const finalURL = scriptURL + "?adTitle=" + encodeURIComponent(title) + "&timestamp=" + encodeURIComponent(new Date().toLocaleString());
-        const img = new Image();
-        
-        img.onload = function() {
+
+        // [핵심 변경] 모바일 안정성을 위해 fetch(no-cors) 방식 사용
+        fetch(finalURL, { 
+            mode: 'no-cors' 
+        })
+        .then(() => {
+            // 전송 성공 처리
             voteCount++;
             votedIndices.push(index);
             localStorage.setItem('myVoteCount', voteCount);
@@ -191,15 +195,12 @@
             
             alert("투표가 성공적으로 반영되었습니다!");
             location.reload(); 
-        };
-
-        img.onerror = function() {
-            alert("오류가 발생했습니다. 다시 시도해주세요.");
+        })
+        .catch(err => {
+            alert("네트워크 연결이 불안정합니다. 일반 브라우저(Chrome/Safari) 이용을 권장합니다.");
             btn.innerText = originalText;
             btn.disabled = false;
-        };
-
-        img.src = finalURL;
+        });
     }
 </script>
 </body>
