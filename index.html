@@ -154,36 +154,52 @@
         app.appendChild(card);
     });
 
-    function submitVote(title, index) {
-        if (voteCount >= 5) {
-            alert("투표는 1인당 최대 5번까지만 가능합니다. 참여해주셔서 감사합니다!");
-            return;
-        }
+   // 페이지 상단 변수 선언부 근처에 넣어주세요
+let voteCount = parseInt(localStorage.getItem('myVoteCount')) || 0;
+let votedIndices = JSON.parse(localStorage.getItem('votedIndices')) || [];
 
-        if(!confirm(`'${title}'에 투표하시겠습니까?\n(현재 ${voteCount}/5회 투표 완료)`)) return;
-
-        const btn = document.getElementById(`btn-${index}`);
-        btn.innerText = "전송 중...";
-        btn.disabled = true;
-
-        const finalURL = scriptURL + "?adTitle=" + encodeURIComponent(title) + "&timestamp=" + encodeURIComponent(new Date().toLocaleString());
-
-        const img = new Image();
-        img.src = finalURL;
-
-        voteCount++;
-        localStorage.setItem('myVoteCount', voteCount);
-
-        setTimeout(() => {
-            alert(`'${title}' 투표가 완료되었습니다!\n(총 ${voteCount}/5회 완료)`);
-            btn.innerText = "투표 완료";
-            btn.classList.add('voted');
-            
-            if (voteCount >= 5) {
-                alert("모든 투표 기회를 사용하셨습니다. 참여해주셔서 감사합니다!");
-            }
-        }, 1200);
+function submitVote(title, index) {
+    // 1. 이미 5번 투표했는지 체크
+    if (voteCount >= 5) {
+        alert("이미 5번의 투표를 모두 완료하셨습니다. 참여해주셔서 감사합니다!");
+        return;
     }
+
+    // 2. 같은 항목에 또 투표하는지 체크 (중복 차단)
+    if (votedIndices.includes(index)) {
+        alert("이 광고에는 이미 투표하셨습니다. 다른 광고를 선택해주세요!");
+        return;
+    }
+
+    if (!confirm('`' + title + '`에 투표하시겠습니까?\n(현재 ' + voteCount + '/5회 투표 완료)')) return;
+
+    const btn = document.getElementById(`btn-${index}`);
+    const originalText = btn.innerText;
+    btn.innerText = "전송 중...";
+    btn.disabled = true;
+
+    const finalURL = scriptURL + "?adTitle=" + encodeURIComponent(title) + "&timestamp=" + encodeURIComponent(new Date().toLocaleString());
+    const img = new Image();
+    
+    img.onload = function() {
+        // 투표 성공 시 브라우저에 기록 저장
+        voteCount++;
+        votedIndices.push(index);
+        localStorage.setItem('myVoteCount', voteCount);
+        localStorage.setItem('votedIndices', JSON.stringify(votedIndices));
+        
+        alert("투표가 성공적으로 반영되었습니다!");
+        location.reload(); // 새로고침하여 상태 업데이트
+    };
+
+    img.onerror = function() {
+        alert("오류가 발생했습니다. 다시 시도해주세요.");
+        btn.innerText = originalText;
+        btn.disabled = false;
+    };
+
+    img.src = finalURL;
+}
 </script>
 </body>
 </html>
