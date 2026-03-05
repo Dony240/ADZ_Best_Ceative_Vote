@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>베스트 크리에이티브 투표</title>
     <style>
-        /* 기본 디자인 유지 */
         body { font-family: 'Pretendard', sans-serif; margin: 0; padding: 20px; background: #f0f2f5; color: #333; }
         .header { text-align: center; padding: 30px 0; }
         
@@ -18,42 +17,15 @@
         }
 
         .ad-card { 
-            background: white; 
-            border-radius: 15px; 
-            overflow: hidden; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
-            display: flex;
-            flex-direction: column;
+            background: white; border-radius: 15px; overflow: hidden; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: flex; flex-direction: column;
         }
 
-        .video-container { 
-            position: relative; 
-            padding-bottom: 56.25%; 
-            height: 0; 
-            background: #000;
-        }
-        .video-container iframe { 
-            position: absolute; 
-            top: 0; left: 0; 
-            width: 100%; height: 100%; 
-            border: 0; 
-        }
+        .video-container { position: relative; padding-bottom: 56.25%; height: 0; background: #000; }
+        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
 
-        .info { 
-            padding: 15px 20px; 
-            text-align: left; 
-            flex-grow: 1; 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: space-between; 
-        }
-        .info h3 { 
-            margin: 0 0 15px 0; 
-            font-size: 1rem; 
-            font-weight: 600;
-            color: #222;
-            line-height: 1.4;
-        }
+        .info { padding: 15px 20px; text-align: left; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .info h3 { margin: 0 0 15px 0; font-size: 1rem; font-weight: 600; color: #222; line-height: 1.4; }
         
         .vote-btn { 
             background: #007bff; color: white; border: none; padding: 14px 0; 
@@ -61,40 +33,45 @@
         }
         .vote-btn:hover { background: #0056b3; }
         .vote-btn:disabled { background: #ccc; cursor: not-allowed; }
-        
-        /* 투표 완료 상태 디자인: 녹색으로 변경 및 클릭 방지 */
         .vote-btn.voted { background: #28a745 !important; color: white !important; cursor: default !important; }
+
+        /* 팝업 모달 스타일 */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7); display: none; /* 초기값 숨김 */
+            align-items: center; justify-content: center; z-index: 9999;
+            backdrop-filter: blur(5px);
+        }
+        .modal-content {
+            background: white; padding: 30px; border-radius: 20px; text-align: center;
+            max-width: 320px; width: 80%; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            animation: fadeIn 0.3s ease-out;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .modal-content h2 { margin-top: 0; color: #007bff; font-size: 1.4rem; }
+        .modal-content p { line-height: 1.6; color: #555; margin-bottom: 25px; }
+        .modal-content b { color: #d63384; }
+        .modal-close-btn {
+            background: #007bff; color: white; border: none; padding: 12px 0;
+            border-radius: 10px; font-weight: bold; cursor: pointer; width: 100%; font-size: 1rem;
+        }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <h2>ADZ 베스트 크리에이티브 투표</h2>
-        
-        <div style="max-width: 800px; margin: 20px auto; text-align: left; background: #fff; padding: 25px; border-radius: 12px; border: 1px solid #e1e4e8; line-height: 1.6; font-size: 0.95rem;">
-            <p style="margin-top: 0;">격월로 진행되는 베스트 크리에이티브 온라인 투표에 오신 여러분 환영합니다.<br>
-            후보작은 <b>2026년 1~2월에 온에어된 광고 약 4,000여 개를 선별하여 30개의 광고가 선정</b>되었습니다.</p>
-            
-            <p>온라인 투표를 통해 <b>10개 이하 광고</b>를 선정, 내부 심사를 거쳐 <b>최종 1편의 베스트 크리에이티브</b>가 결정됩니다.<br>
-            최종 선정작은 2026년 대한민국광고대상에서 <b>예심 없이 본심</b>에 오르며, 해당 크리에이티브를 제작한 <b>담당 팀의 인터뷰</b>도 함께 진행됩니다.</p>
-            
-            <div style="background: #eef7ff; padding: 15px; border-radius: 8px; border-left: 5px solid #007bff; margin: 20px 0;">
-                <b style="color: #0056b3; font-size: 1.1rem;">🗳 투표 방법 및 절차</b>
-                <ol style="margin: 10px 0 0 20px; padding: 0;">
-                    <li>썸네일을 클릭하여 광고를 감상하세요.</li>
-                    <li>후보작 중 베스트 크리에이티브를 선택해 주세요. <b>(최대 5개까지 선택 가능)</b></li>
-                    <li>투표하기 버튼을 클릭하면 투표가 완료됩니다.</li>
-                </ol>
-            </div>
-
-            <p style="text-align: center; background: #f8f9fa; padding: 10px; border-radius: 5px; font-weight: bold; color: #d63384; margin-bottom: 10px;">
-                ※ 투표기간: 2026년 3.3(화) 12시 ~ 3.8(일) 18시까지
-            </p>
-            <p style="text-align: center; font-size: 0.85rem; color: #666; margin: 0;">
-                ⚠️ 인스타그램/카톡에서 오류 발생 시, 우측 상단 [점 3개] 클릭 후 <br><b>'다른 브라우저로 열기'</b>(Chrome, Safari 등)를 이용해 주세요.
-            </p>
+    <div id="welcome-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h2>🗳 투표 안내</h2>
+            <p>베스트 크리에이티브 투표에<br>오신 것을 환영합니다!<br><br>
+               여러분에게는 <b>총 5번의 투표 기회</b>가<br>주어집니다. 가장 멋진 광고를 골라주세요!</p>
+            <button class="modal-close-btn" onclick="closeModal()">확인했습니다</button>
         </div>
     </div>
+
+    <div class="header">
+        <h2>ADZ 베스트 크리에이티브 투표</h2>
+        </div>
 
     <div id="app"></div>
 
@@ -103,6 +80,18 @@
 
     let voteCount = parseInt(localStorage.getItem('myVoteCount')) || 0;
     let votedIndices = JSON.parse(localStorage.getItem('votedIndices')) || [];
+
+    // 팝업 로직: 오늘 처음 방문했거나 아직 투표 전이면 보여줌
+    window.onload = function() {
+        if (!localStorage.getItem('welcomeSeen')) {
+            document.getElementById('welcome-modal').style.display = 'flex';
+        }
+    };
+
+    function closeModal() {
+        document.getElementById('welcome-modal').style.display = 'none';
+        localStorage.setItem('welcomeSeen', 'true'); // 다시 보지 않기 저장
+    }
 
     const adList = [
         { id: "k3GnHTPEgJI", title: "[롯데리아] 롯데리아 또 이상한 거 한다!" },
@@ -139,68 +128,50 @@
 
     const app = document.getElementById('app');
 
-    // 리스트 렌더링 최적화
     adList.forEach((ad, index) => {
         const card = document.createElement('div');
         card.className = 'ad-card';
         const displayIndex = String(index + 1).padStart(2, '0');
-        
         const hasVoted = votedIndices.includes(index);
-        const btnText = hasVoted ? "투표 완료" : "투표하기";
-        const btnClass = hasVoted ? "vote-btn voted" : "vote-btn";
-        const btnDisabled = hasVoted ? "disabled" : "";
 
         card.innerHTML = `
             <div class="video-container">
                 <iframe src="https://www.youtube.com/embed/${ad.id}?rel=0" 
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
                         allowfullscreen loading="lazy"></iframe>
             </div>
             <div class="info">
                 <h3>${displayIndex}. ${ad.title}</h3>
-                <button class="${btnClass}" id="btn-${index}" onclick="submitVote('${ad.title}', ${index})" ${btnDisabled}>${btnText}</button>
+                <button class="vote-btn ${hasVoted ? 'voted' : ''}" id="btn-${index}" 
+                        onclick="submitVote('${ad.title}', ${index})" ${hasVoted ? 'disabled' : ''}>
+                    ${hasVoted ? '투표 완료' : '투표하기'}
+                </button>
             </div>
         `;
         app.appendChild(card);
     });
 
-    /**
-     * 투표 함수: 새로고침 없이 즉각 UI 반영
-     */
     function submitVote(title, index) {
         if (voteCount >= 5) {
-            alert("이미 5번의 투표를 모두 완료하셨습니다. 참여해주셔서 감사합니다!");
+            alert("이미 5번의 투표를 모두 완료하셨습니다.");
             return;
         }
-
-        if (votedIndices.includes(index)) {
-            alert("이 광고에는 이미 투표하셨습니다.");
-            return;
-        }
+        if (votedIndices.includes(index)) return;
 
         if (!confirm('`' + title + '`에 투표하시겠습니까?\n(현재 ' + voteCount + '/5회 투표 완료)')) return;
 
         const btn = document.getElementById(`btn-${index}`);
-        const originalText = btn.innerText;
         btn.innerText = "전송 중...";
         btn.disabled = true;
 
         const finalURL = scriptURL + "?adTitle=" + encodeURIComponent(title) + "&timestamp=" + encodeURIComponent(new Date().toLocaleString());
 
-        // 전송 시도
-        fetch(finalURL, { 
-            method: 'GET',
-            mode: 'no-cors',
-            cache: 'no-cache'
-        })
+        fetch(finalURL, { method: 'GET', mode: 'no-cors', cache: 'no-cache' })
         .then(() => {
-            // [개선] location.reload()를 삭제하여 전체 다시 로딩을 방지함
             voteCount++;
             votedIndices.push(index);
             localStorage.setItem('myVoteCount', voteCount);
             localStorage.setItem('votedIndices', JSON.stringify(votedIndices));
             
-            // [개선] 현재 클릭한 버튼만 즉시 '투표 완료' 상태로 변경
             btn.innerText = "투표 완료";
             btn.classList.add('voted');
             btn.disabled = true;
@@ -208,8 +179,8 @@
             alert("투표가 성공적으로 반영되었습니다! (" + voteCount + "/5회 완료)");
         })
         .catch(err => {
-            alert("네트워크 상태가 원활하지 않습니다. 잠시 후 다시 시도해주세요.");
-            btn.innerText = originalText;
+            alert("네트워크 상태가 원활하지 않습니다.");
+            btn.innerText = "투표하기";
             btn.disabled = false;
         });
     }
