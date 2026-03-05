@@ -39,6 +39,7 @@
 <script>
     const scriptURL = 'https://script.google.com/macros/s/AKfycbxDchjYrdyKggqADRJBtrdpfLKurrHOdzHq0B8ZTmo1L5PwEAuoCTgYfF_U_fY8Q-N7rg/exec';
 
+    // 1. 투표 데이터 정의
     const adList = [
         { id: "k3GnHTPEgJI", title: "[롯데리아] 롯데리아 또 이상한 거 한다!" },
         { id: "J7Da0vG0IFo", title: "[메치니코프] 착한발효유 메치니코프" },
@@ -75,6 +76,7 @@
     let voteCount = parseInt(localStorage.getItem('myVoteCount')) || 0;
     let votedIndices = JSON.parse(localStorage.getItem('votedIndices')) || [];
 
+    // 2. 화면 렌더링 함수
     function renderApp() {
         const app = document.getElementById('app');
         app.innerHTML = ''; 
@@ -105,16 +107,10 @@
         if(statusEl) statusEl.innerText = `${voteCount} / 5`;
     }
 
-    // [수정] 페이지 로드 시 이미지 내용을 담은 첫 번째 팝업 노출
-    window.onload = function() {
-        alert("격월로 진행되는 베스트 크리에이티브 온라인 투표에 오신 여러분 환영합니다.\n\n" +
-              "후보작은 2026년 1~2월에 온에어된 광고 약 4,000여 개를 선별하여 30개의 광고가 선정되었습니다.\n\n" +
-              "온라인 투표를 통해 10개 이하 광고를 선정, 내부 심사를 거쳐 최종 1편의 베스트 크리에이티브가 결정됩니다.\n" +
-              "최종 선정작은 2026년 대한민국광고대상에서 예심 없이 본심에 오르며, 해당 팀의 인터뷰는 ADZ 3/4월호에서 확인하실 수 있습니다.\n\n" +
-              "※ 투표기간: 2026. 3. 3(화) 12시 ~ 3. 8(일) 18시까지");
-        renderApp();
-    };
+    // 페이지 로드 시 즉시 실행
+    window.onload = renderApp;
 
+    // 3. 투표 전송 함수
     function submitVote(title, index) {
         if (voteCount >= 5) {
             alert("이미 5번의 투표를 모두 완료하셨습니다. 참여해주셔서 감사합니다!");
@@ -136,6 +132,7 @@
 
         const finalURL = scriptURL + "?adTitle=" + encodeURIComponent(title) + "&timestamp=" + encodeURIComponent(new Date().toLocaleString());
 
+        // fetch no-cors 모드로 모바일 차단 방지
         fetch(finalURL, { 
             mode: 'no-cors',
             cache: 'no-cache'
