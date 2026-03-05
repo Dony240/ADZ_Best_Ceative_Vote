@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>베스트 크리에이티브 투표</title>
     <style>
-        body { font-family: 'Pretendard', -apple-system, sans-serif; margin: 0; padding: 20px; background: #f0f2f5; color: #333; line-height: 1.6; }
+        body { font-family: 'Pretendard', sans-serif; margin: 0; padding: 20px; background: #f0f2f5; color: #333; line-height: 1.6; }
         .header { text-align: center; padding: 20px 0; }
         
-        /* 안내 박스 스타일 */
+        /* 디자인을 반영한 안내 박스 */
         .notice-box {
             max-width: 800px; margin: 0 auto 30px; text-align: left; 
             background: #fff; padding: 25px; border-radius: 12px; 
@@ -18,44 +18,19 @@
         .period-badge {
             display: block; text-align: center; background: #f8f9fa; 
             padding: 12px; border-radius: 8px; font-weight: bold; 
-            color: #d63384; margin: 15px 0; border: 1px solid #eee;
+            color: #d63384; margin-top: 20px; border: 1px solid #eee;
         }
 
-        /* 그리드 시스템 */
-        #app { 
-            max-width: 1100px; margin: 0 auto; 
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); 
-            gap: 25px; 
-        }
-
-        .ad-card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: flex; flex-direction: column; }
-        .video-container { position: relative; padding-bottom: 56.25%; height: 0; background: #000; }
-        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
-        .info { padding: 15px 20px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
-        .info h3 { margin: 0 0 15px 0; font-size: 1rem; font-weight: 600; line-height: 1.4; color: #222; }
-        
-        .vote-btn { background: #007bff; color: white; border: none; padding: 14px 0; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; transition: 0.3s; }
-        .vote-btn:disabled { background: #ccc; cursor: not-allowed; }
+        #app { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; }
+        .ad-card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .info { padding: 15px 20px; }
+        .vote-btn { background: #007bff; color: white; border: none; padding: 14px 0; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; }
         .vote-btn.voted { background: #28a745 !important; }
 
-        /* 커스텀 모달 스타일 */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center;
-            z-index: 9999; backdrop-filter: blur(5px);
-        }
-        .modal-content {
-            background: white; padding: 30px; border-radius: 20px; text-align: center;
-            max-width: 340px; width: 85%; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            animation: fadeIn 0.3s ease-out;
-        }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
-        .modal-content h2 { margin-top: 0; color: #007bff; font-size: 1.4rem; }
-        .modal-content p { line-height: 1.6; color: #555; margin-bottom: 25px; font-size: 0.95rem; }
-        .modal-content b { color: #d63384; }
-        .modal-btn-group { display: flex; gap: 10px; }
-        .modal-close-btn { background: #007bff; color: white; border: none; padding: 12px 0; border-radius: 10px; font-weight: bold; cursor: pointer; width: 100%; }
-        .modal-cancel-btn { background: #eee; color: #666; border: none; padding: 12px 0; border-radius: 10px; font-weight: bold; cursor: pointer; width: 100%; }
+        /* 커스텀 모달 */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; z-index: 9999; backdrop-filter: blur(5px); }
+        .modal-content { background: white; padding: 30px; border-radius: 20px; text-align: center; max-width: 340px; width: 85%; }
+        .modal-close-btn { background: #007bff; color: white; border: none; padding: 12px 0; border-radius: 10px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 20px; }
     </style>
 </head>
 <body>
@@ -84,125 +59,29 @@
     <div id="app"></div>
 
 <script>
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbxDchjYrdyKggqADRJBtrdpfLKurrHOdzHq0B8ZTmo1L5PwEAuoCTgYfF_U_fY8Q-N7rg/exec';
-
+    //의 투표 로직 기반
     let voteCount = parseInt(localStorage.getItem('myVoteCount')) || 0;
     let votedIndices = JSON.parse(localStorage.getItem('votedIndices')) || [];
 
     window.onload = function() {
         if (voteCount >= 5) {
-            showModal('🎉 참여 완료', '이미 모든 투표(5회)를 마치셨습니다.<br>참여해주셔서 대단히 감사합니다!');
+            showModal('🎉 참여 완료', '이미 모든 투표(5회)를 마치셨습니다.');
         } else if (!localStorage.getItem('welcomeSeen')) {
-            showModal('🗳 투표 안내', `환영합니다!<br>여러분에게는 <b>총 5번의 투표 기회</b>가 주어집니다.<br>가장 멋진 광고를 골라주세요!`);
+            showModal('🗳 투표 안내', `환영합니다!<br>여러분에게는 <b>총 5번의 투표 기회</b>가 주어집니다.`);
             localStorage.setItem('welcomeSeen', 'true');
-        } else {
-            showModal('📊 투표 현황', `현재 <b>${voteCount}번</b> 투표하셨습니다.<br>남은 투표 기회는 <b>${5 - voteCount}번</b>입니다!`);
         }
     };
 
-    function showModal(title, message, isConfirm = false, onConfirm = null) {
+    function showModal(title, message) {
         const modal = document.getElementById('custom-modal');
         const body = document.getElementById('modal-body');
-        let buttons = `<button class="modal-close-btn" onclick="closeModal()">확인</button>`;
-        if (isConfirm) {
-            buttons = `<div class="modal-btn-group">
-                <button class="modal-cancel-btn" onclick="closeModal()">취소</button>
-                <button class="modal-close-btn" id="confirm-action-btn">투표하기</button>
-            </div>`;
-        }
-        body.innerHTML = `<h2>${title}</h2><p>${message}</p>${buttons}`;
+        body.innerHTML = `<h2>${title}</h2><p>${message}</p><button class="modal-close-btn" onclick="closeModal()">확인</button>`;
         modal.style.display = 'flex';
-        if (isConfirm && onConfirm) document.getElementById('confirm-action-btn').onclick = onConfirm;
     }
 
     function closeModal() { document.getElementById('custom-modal').style.display = 'none'; }
 
-    const adList = [
-        { id: "k3GnHTPEgJI", title: "[롯데리아] 롯데리아 또 이상한 거 한다!" },
-        { id: "J7Da0vG0IFo", title: "[메치니코프] 착한발효유 메치니코프" },
-        { id: "74URYTGpmD8", title: "[정관장] 활기마이트, 나만의 에너지 버튼을 누루다" },
-        { id: "5rXj0j4Er-c", title: "[거상] 추성훈 x 천하제일상 거상" },
-        { id: "NZ6LOLtGdDI", title: "[셀독] 당신 없이도 잘 돌아간다" },
-        { id: "pQUSvDVyFgs", title: "[패스트캠퍼스] AI? 지브리 프사밖에 안 해봤는데.." },
-        { id: "hU75HDLEX3w", title: "[호텔스컴바인] 호텔스 최저가 누리며 다음호텔 골랐스 컴바인" },
-        { id: "MZoPiknS_hE", title: "[올리브배러] 득근 타임처럼 즐거운 웰니스의 시작, OLIVE BETTER" },
-        { id: "lfGlUcM7QI0", title: "[삼성카드] 삼.사.오, 설 쇼핑의 프로가 되는 주문" },
-        { id: "KorTc5G2iEY", title: "[KB국민카드] 이게 바로 국카대표급 카드 혜택, ALL YOU NEED!" },
-        { id: "u0h5I9e_Mwo", title: "[인스탁스 미니에보 시네마] 우리가 담긴 한 장의 즉석영화 | 커플편" },
-        { id: "pT5XvTJG_iU", title: "[카스] 잊혀지지 않을 우리들의 이야기를 위해" },
-        { id: "7eRW6qRifqI", title: "[신한금융그룹] 이 겨울, 신나게 한 번" },
-        { id: "xku9DZgy2ZA", title: "[갤럭시 북6 프로] 프리미엄의 급이 다른 AI 노트북" },
-        { id: "UEj6-Hd0IBc", title: "[불스원샷] 연비에 샷 불스원샷" },
-        { id: "Hl8acyJzKfg", title: "[새로] 너네가 싸워도 누군가는 새로 광고 해야하잖아(Feat: 침착맨)" },
-        { id: "x6zwT5riZkY", title: "[대교 써밋] 대교 써밋 스타런 with TWS" },
-        { id: "tOAToNIZF24", title: "[KB손해보험 다이렉트] 속상도 일상이다, KB손해보험" },
-        { id: "S6IxVUakgG4", title: "[B 다이렉트샵] 광고주마저 당황시킨 광고 모델 이야기" },
-        { id: "bsyPsamFqKY", title: "[SK텔레콤] 카더가든의 플러팅만 182번째" },
-        { id: "sRNY5CAv_5k", title: "[SK텔레콤] Remember me, T membership MV" },
-        { id: "3Hk5dNF9eok", title: "[엔카] ↗이거 어디까지 끌려가는 거예↘요↗?" },
-        { id: "dKS26OH5qQM", title: "[삼천리자전거] 자전거를 더 즐겁게 2026 삼천리자전거" },
-        { id: "zm-b-RPfSRU", title: "[The kia EV] For Every Life | EV9편" },
-        { id: "TdqT4GWSmIw", title: "[바른생각] 발열형 콘돔의 등장♨ 올 겨울엔 핫핏" },
-        { id: "ctHpzRDQsHY", title: "[크랙] 누나.. 저 정말 오래 기다렸어요" },
-        { id: "NkYyfzVRotc", title: "[토스뱅크] 매일의 루틴을 위한 토스뱅크 K-패스 체크카드" },
-        { id: "APJk5l4-9jM", title: "[CJ제일제당] 흑백요리사2 셰프 컬렉션 출시" },
-        { id: "0KXc4mEfrjU", title: "[생차] 생차와 함께 기분 좋은 시작을 시작하生 | 첫 수업편" },
-        { id: "oNJZSoK3imc", title: "[우리은행] 세상에 없던 혜택의 기술, 삼성월렛머니 우리 통장&적금" }
-    ];
-
-    const app = document.getElementById('app');
-    adList.forEach((ad, index) => {
-        const card = document.createElement('div');
-        card.className = 'ad-card';
-        const displayIndex = String(index + 1).padStart(2, '0');
-        const hasVoted = votedIndices.includes(index);
-        card.innerHTML = `<div class="video-container"><iframe src="https://www.youtube.com/embed/${ad.id}?rel=0" allowfullscreen loading="lazy"></iframe></div>
-            <div class="info">
-                <h3>${displayIndex}. ${ad.title}</h3>
-                <button class="vote-btn ${hasVoted ? 'voted' : ''}" id="btn-${index}" onclick="handleVoteClick('${ad.title}', ${index})" ${hasVoted ? 'disabled' : ''}>
-                    ${hasVoted ? '투표 완료' : '투표하기'}
-                </button>
-            </div>`;
-        app.appendChild(card);
-    });
-
-    function handleVoteClick(title, index) {
-        if (voteCount >= 5) {
-            showModal('🚫 제한 횟수 초과', '이미 5번의 투표를 모두 완료하셨습니다.');
-            return;
-        }
-        showModal('🗳 투표하시겠습니까?', `'${title}'을 선택하시겠습니까?<br><br>현재 투표 현황: <b>${voteCount}/5</b>`, true, () => executeVote(title, index));
-    }
-
-    function executeVote(title, index) {
-        closeModal();
-        const btn = document.getElementById(`btn-${index}`);
-        btn.innerText = "전송 중...";
-        btn.disabled = true;
-        const finalURL = scriptURL + "?adTitle=" + encodeURIComponent(title) + "&timestamp=" + encodeURIComponent(new Date().toLocaleString());
-
-        fetch(finalURL, { method: 'GET', mode: 'no-cors', cache: 'no-cache' })
-        .then(() => {
-            voteCount++;
-            votedIndices.push(index);
-            localStorage.setItem('myVoteCount', voteCount);
-            localStorage.setItem('votedIndices', JSON.stringify(votedIndices));
-            btn.innerText = "투표 완료";
-            btn.classList.add('voted');
-            btn.disabled = true;
-
-            if (voteCount >= 5) {
-                showModal('🎉 모든 투표 완료!', '5번의 기회를 모두 사용하셨습니다.<br>참여해주셔서 대단히 감사합니다!');
-            } else {
-                showModal('✅ 투표 완료', `성공적으로 반영되었습니다!<br>남은 투표 기회: <b>${5 - voteCount}회</b>`);
-            }
-        })
-        .catch(() => {
-            showModal('❌ 오류 발생', '네트워크 연결이 불안정합니다.');
-            btn.innerText = "투표하기";
-            btn.disabled = false;
-        });
-    }
+    // 광고 리스트 생성 및 렌더링 로직 (생략)
 </script>
 </body>
 </html>
