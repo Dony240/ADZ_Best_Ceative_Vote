@@ -5,15 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>베스트 크리에이티브 투표</title>
     <style>
-        /* 기본 레이아웃 스타일 */
-        body { font-family: 'Pretendard', sans-serif; margin: 0; padding: 20px; background: #f0f2f5; color: #333; }
-        .header { text-align: center; padding: 30px 0; }
-        #app { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; }
+        body { font-family: 'Pretendard', -apple-system, sans-serif; margin: 0; padding: 20px; background: #f0f2f5; color: #333; line-height: 1.6; }
+        .header { text-align: center; padding: 20px 0; }
+        
+        /* 안내 박스 스타일 */
+        .notice-box {
+            max-width: 800px; margin: 0 auto 30px; text-align: left; 
+            background: #fff; padding: 25px; border-radius: 12px; 
+            border: 1px solid #e1e4e8; box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            font-size: 0.95rem;
+        }
+        .period-badge {
+            display: block; text-align: center; background: #f8f9fa; 
+            padding: 12px; border-radius: 8px; font-weight: bold; 
+            color: #d63384; margin: 15px 0; border: 1px solid #eee;
+        }
+
+        /* 그리드 시스템 */
+        #app { 
+            max-width: 1100px; margin: 0 auto; 
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); 
+            gap: 25px; 
+        }
+
         .ad-card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: flex; flex-direction: column; }
         .video-container { position: relative; padding-bottom: 56.25%; height: 0; background: #000; }
         .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
         .info { padding: 15px 20px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
-        .info h3 { margin: 0 0 15px 0; font-size: 1rem; font-weight: 600; line-height: 1.4; }
+        .info h3 { margin: 0 0 15px 0; font-size: 1rem; font-weight: 600; line-height: 1.4; color: #222; }
         
         .vote-btn { background: #007bff; color: white; border: none; padding: 14px 0; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; transition: 0.3s; }
         .vote-btn:disabled { background: #ccc; cursor: not-allowed; }
@@ -27,31 +46,39 @@
         }
         .modal-content {
             background: white; padding: 30px; border-radius: 20px; text-align: center;
-            max-width: 320px; width: 85%; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            max-width: 340px; width: 85%; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             animation: fadeIn 0.3s ease-out;
         }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
-        
         .modal-content h2 { margin-top: 0; color: #007bff; font-size: 1.4rem; }
-        .modal-content p { line-height: 1.6; color: #555; margin-bottom: 25px; }
+        .modal-content p { line-height: 1.6; color: #555; margin-bottom: 25px; font-size: 0.95rem; }
         .modal-content b { color: #d63384; }
         .modal-btn-group { display: flex; gap: 10px; }
-        .modal-close-btn {
-            background: #007bff; color: white; border: none; padding: 12px 0;
-            border-radius: 10px; font-weight: bold; cursor: pointer; width: 100%; font-size: 1rem;
-        }
+        .modal-close-btn { background: #007bff; color: white; border: none; padding: 12px 0; border-radius: 10px; font-weight: bold; cursor: pointer; width: 100%; }
         .modal-cancel-btn { background: #eee; color: #666; border: none; padding: 12px 0; border-radius: 10px; font-weight: bold; cursor: pointer; width: 100%; }
     </style>
 </head>
 <body>
 
     <div id="custom-modal" class="modal-overlay">
-        <div class="modal-content" id="modal-body">
-            </div>
+        <div class="modal-content" id="modal-body"></div>
     </div>
 
     <div class="header">
-        <h2>ADZ 베스트 크리에이티브 투표</h2>
+        <h2 style="font-size: 1.8rem; margin-bottom: 20px;">ADZ 베스트 크리에이티브 투표</h2>
+        
+        <div class="notice-box">
+            <p style="margin-top: 0;">격월로 진행되는 베스트 크리에이티브 온라인 투표에 오신 여러분 환영합니다.<br>
+            후보작은 <b>2026년 1~2월에 온에어된 광고 약 4,000여 개를 선별하여 30개의 광고가 선정</b>되었습니다.</p>
+            
+            <p>온라인 투표를 통해 <b>10개 이하 광고</b>를 선정, 내부 심사를 거쳐 <b>최종 1편의 베스트 크리에이티브</b>가 결정됩니다.<br>
+            최종 선정작은 2026년 대한민국광고대상에서 <b>예심 없이 본심</b>에 오르며, 해당 크리에이티브를 제작한 <b>담당 팀의 인터뷰</b>도 함께 진행됩니다.<br>
+            인터뷰는 <b>ADZ 3/4월호</b>에서 확인할 수 있습니다.</p>
+
+            <div class="period-badge">
+                ※ 투표기간: 2026. 3. 3(화) 12시 ~ 3. 8(일) 18시까지
+            </div>
+        </div>
     </div>
 
     <div id="app"></div>
@@ -62,46 +89,34 @@
     let voteCount = parseInt(localStorage.getItem('myVoteCount')) || 0;
     let votedIndices = JSON.parse(localStorage.getItem('votedIndices')) || [];
 
-    // 페이지 접속 시 상태별 팝업 노출 로직
     window.onload = function() {
         if (voteCount >= 5) {
-            showModal('🎉 참여 완료', '이미 모든 투표(5회)를 마치셨습니다.<br>참여해주셔서 감사합니다!');
+            showModal('🎉 참여 완료', '이미 모든 투표(5회)를 마치셨습니다.<br>참여해주셔서 대단히 감사합니다!');
         } else if (!localStorage.getItem('welcomeSeen')) {
-            showModal('🗳 투표 안내', `환영합니다!<br>여러분에게는 <b>총 5번의 투표 기회</b>가 주어집니다.<br>최고의 광고를 골라주세요!`);
+            showModal('🗳 투표 안내', `환영합니다!<br>여러분에게는 <b>총 5번의 투표 기회</b>가 주어집니다.<br>가장 멋진 광고를 골라주세요!`);
             localStorage.setItem('welcomeSeen', 'true');
         } else {
-            showModal('📊 투표 진행 중', `현재 <b>${voteCount}번</b> 투표하셨습니다.<br>남은 투표 기회는 <b>${5 - voteCount}번</b>입니다!`);
+            showModal('📊 투표 현황', `현재 <b>${voteCount}번</b> 투표하셨습니다.<br>남은 투표 기회는 <b>${5 - voteCount}번</b>입니다!`);
         }
     };
 
-    // 모달 표시 함수
     function showModal(title, message, isConfirm = false, onConfirm = null) {
         const modal = document.getElementById('custom-modal');
         const body = document.getElementById('modal-body');
-        
         let buttons = `<button class="modal-close-btn" onclick="closeModal()">확인</button>`;
         if (isConfirm) {
-            buttons = `
-                <div class="modal-btn-group">
-                    <button class="modal-cancel-btn" onclick="closeModal()">취소</button>
-                    <button class="modal-close-btn" id="confirm-action-btn">투표하기</button>
-                </div>
-            `;
+            buttons = `<div class="modal-btn-group">
+                <button class="modal-cancel-btn" onclick="closeModal()">취소</button>
+                <button class="modal-close-btn" id="confirm-action-btn">투표하기</button>
+            </div>`;
         }
-
         body.innerHTML = `<h2>${title}</h2><p>${message}</p>${buttons}`;
         modal.style.display = 'flex';
-
-        if (isConfirm && onConfirm) {
-            document.getElementById('confirm-action-btn').onclick = onConfirm;
-        }
+        if (isConfirm && onConfirm) document.getElementById('confirm-action-btn').onclick = onConfirm;
     }
 
-    function closeModal() {
-        document.getElementById('custom-modal').style.display = 'none';
-    }
+    function closeModal() { document.getElementById('custom-modal').style.display = 'none'; }
 
-    // 광고 리스트 및 렌더링 (기존과 동일)
     const adList = [
         { id: "k3GnHTPEgJI", title: "[롯데리아] 롯데리아 또 이상한 거 한다!" },
         { id: "J7Da0vG0IFo", title: "[메치니코프] 착한발효유 메치니코프" },
@@ -141,35 +156,29 @@
         card.className = 'ad-card';
         const displayIndex = String(index + 1).padStart(2, '0');
         const hasVoted = votedIndices.includes(index);
-        card.innerHTML = `
-            <div class="video-container"><iframe src="https://www.youtube.com/embed/${ad.id}?rel=0" allowfullscreen loading="lazy"></iframe></div>
+        card.innerHTML = `<div class="video-container"><iframe src="https://www.youtube.com/embed/${ad.id}?rel=0" allowfullscreen loading="lazy"></iframe></div>
             <div class="info">
                 <h3>${displayIndex}. ${ad.title}</h3>
                 <button class="vote-btn ${hasVoted ? 'voted' : ''}" id="btn-${index}" onclick="handleVoteClick('${ad.title}', ${index})" ${hasVoted ? 'disabled' : ''}>
                     ${hasVoted ? '투표 완료' : '투표하기'}
                 </button>
-            </div>
-        `;
+            </div>`;
         app.appendChild(card);
     });
 
-    // 투표 클릭 핸들러
     function handleVoteClick(title, index) {
         if (voteCount >= 5) {
             showModal('🚫 제한 횟수 초과', '이미 5번의 투표를 모두 완료하셨습니다.');
             return;
         }
-        // 투표 전 컨펌 모달 띄우기
-        showModal('🗳 투표하시겠습니까?', `'${title}' 작품을 선택하시겠습니까?<br><br>현재 진행: <b>${voteCount}/5</b>`, true, () => executeVote(title, index));
+        showModal('🗳 투표하시겠습니까?', `'${title}'을 선택하시겠습니까?<br><br>현재 투표 현황: <b>${voteCount}/5</b>`, true, () => executeVote(title, index));
     }
 
-    // 실제 데이터 전송 함수
     function executeVote(title, index) {
         closeModal();
         const btn = document.getElementById(`btn-${index}`);
         btn.innerText = "전송 중...";
         btn.disabled = true;
-
         const finalURL = scriptURL + "?adTitle=" + encodeURIComponent(title) + "&timestamp=" + encodeURIComponent(new Date().toLocaleString());
 
         fetch(finalURL, { method: 'GET', mode: 'no-cors', cache: 'no-cache' })
@@ -178,20 +187,18 @@
             votedIndices.push(index);
             localStorage.setItem('myVoteCount', voteCount);
             localStorage.setItem('votedIndices', JSON.stringify(votedIndices));
-            
             btn.innerText = "투표 완료";
             btn.classList.add('voted');
             btn.disabled = true;
 
-            // 투표 완료 후 상태별 결과 팝업
             if (voteCount >= 5) {
-                showModal('🎉 모든 투표 완료!', '5번의 소중한 기회를 모두 사용하셨습니다.<br>참여해주셔서 감사합니다!');
+                showModal('🎉 모든 투표 완료!', '5번의 기회를 모두 사용하셨습니다.<br>참여해주셔서 대단히 감사합니다!');
             } else {
                 showModal('✅ 투표 완료', `성공적으로 반영되었습니다!<br>남은 투표 기회: <b>${5 - voteCount}회</b>`);
             }
         })
         .catch(() => {
-            showModal('❌ 오류 발생', '네트워크 연결을 확인해주세요.');
+            showModal('❌ 오류 발생', '네트워크 연결이 불안정합니다.');
             btn.innerText = "투표하기";
             btn.disabled = false;
         });
