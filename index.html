@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>베스트 크리에이티브 투표</title>
     <style>
+        /* 기본 디자인 유지 */
         body { font-family: 'Pretendard', sans-serif; margin: 0; padding: 20px; background: #f0f2f5; color: #333; }
         .header { text-align: center; padding: 30px 0; }
         
@@ -60,7 +61,9 @@
         }
         .vote-btn:hover { background: #0056b3; }
         .vote-btn:disabled { background: #ccc; cursor: not-allowed; }
-        .vote-btn.voted { background: #28a745; cursor: default; } /* 투표 완료 상태 스타일 */
+        
+        /* 투표 완료 상태 디자인: 녹색으로 변경 및 클릭 방지 */
+        .vote-btn.voted { background: #28a745 !important; color: white !important; cursor: default !important; }
     </style>
 </head>
 <body>
@@ -73,8 +76,7 @@
             후보작은 <b>2026년 1~2월에 온에어된 광고 약 4,000여 개를 선별하여 30개의 광고가 선정</b>되었습니다.</p>
             
             <p>온라인 투표를 통해 <b>10개 이하 광고</b>를 선정, 내부 심사를 거쳐 <b>최종 1편의 베스트 크리에이티브</b>가 결정됩니다.<br>
-            최종 선정작은 2026년 대한민국광고대상에서 <b>예심 없이 본심</b>에 오르며, 해당 크리에이티브를 제작한 <b>담당 팀의 인터뷰</b>도 함께 진행됩니다.<br>
-            인터뷰는 <b>ADZ 3/4월호</b>에서 확인할 수 있습니다.</p>
+            최종 선정작은 2026년 대한민국광고대상에서 <b>예심 없이 본심</b>에 오르며, 해당 크리에이티브를 제작한 <b>담당 팀의 인터뷰</b>도 함께 진행됩니다.</p>
             
             <div style="background: #eef7ff; padding: 15px; border-radius: 8px; border-left: 5px solid #007bff; margin: 20px 0;">
                 <b style="color: #0056b3; font-size: 1.1rem;">🗳 투표 방법 및 절차</b>
@@ -99,7 +101,6 @@
 <script>
     const scriptURL = 'https://script.google.com/macros/s/AKfycbxDchjYrdyKggqADRJBtrdpfLKurrHOdzHq0B8ZTmo1L5PwEAuoCTgYfF_U_fY8Q-N7rg/exec';
 
-    // 1. 투표 상태 불러오기 (localStorage 활용하여 새로고침 시에도 유지)
     let voteCount = parseInt(localStorage.getItem('myVoteCount')) || 0;
     let votedIndices = JSON.parse(localStorage.getItem('votedIndices')) || [];
 
@@ -138,7 +139,7 @@
 
     const app = document.getElementById('app');
 
-    // 광고 리스트 렌더링
+    // 리스트 렌더링 최적화
     adList.forEach((ad, index) => {
         const card = document.createElement('div');
         card.className = 'ad-card';
@@ -153,7 +154,7 @@
             <div class="video-container">
                 <iframe src="https://www.youtube.com/embed/${ad.id}?rel=0" 
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                        allowfullscreen></iframe>
+                        allowfullscreen loading="lazy"></iframe>
             </div>
             <div class="info">
                 <h3>${displayIndex}. ${ad.title}</h3>
@@ -164,25 +165,21 @@
     });
 
     /**
-     * 투표 제출 함수 (모바일 인앱 브라우저 최적화 버전)
+     * 투표 함수: 새로고침 없이 즉각 UI 반영
      */
     function submitVote(title, index) {
-        // 1. 횟수 제한 체크
         if (voteCount >= 5) {
             alert("이미 5번의 투표를 모두 완료하셨습니다. 참여해주셔서 감사합니다!");
             return;
         }
 
-        // 2. 중복 투표 체크
         if (votedIndices.includes(index)) {
             alert("이 광고에는 이미 투표하셨습니다.");
             return;
         }
 
-        // 3. 사용자 확인
         if (!confirm('`' + title + '`에 투표하시겠습니까?\n(현재 ' + voteCount + '/5회 투표 완료)')) return;
 
-        // 4. UI 잠금
         const btn = document.getElementById(`btn-${index}`);
         const originalText = btn.innerText;
         btn.innerText = "전송 중...";
@@ -190,28 +187,28 @@
 
         const finalURL = scriptURL + "?adTitle=" + encodeURIComponent(title) + "&timestamp=" + encodeURIComponent(new Date().toLocaleString());
 
-        /**
-         * [해결 포인트] fetch + no-cors
-         * 인앱 브라우저의 CORS 정책 차단을 무시하고 데이터를 전송합니다.
-         */
+        // 전송 시도
         fetch(finalURL, { 
             method: 'GET',
             mode: 'no-cors',
             cache: 'no-cache'
         })
         .then(() => {
-            // 전송 시도 성공 시 로컬 저장소 업데이트
+            // [개선] location.reload()를 삭제하여 전체 다시 로딩을 방지함
             voteCount++;
             votedIndices.push(index);
             localStorage.setItem('myVoteCount', voteCount);
             localStorage.setItem('votedIndices', JSON.stringify(votedIndices));
             
-            alert("투표가 성공적으로 반영되었습니다!");
-            location.reload(); // 상태 업데이트를 위해 페이지 새로고침
+            // [개선] 현재 클릭한 버튼만 즉시 '투표 완료' 상태로 변경
+            btn.innerText = "투표 완료";
+            btn.classList.add('voted');
+            btn.disabled = true;
+
+            alert("투표가 성공적으로 반영되었습니다! (" + voteCount + "/5회 완료)");
         })
         .catch(err => {
-            console.error("Vote Error:", err);
-            alert("네트워크 연결이 불안정합니다. 잠시 후 다시 시도해 주세요.");
+            alert("네트워크 상태가 원활하지 않습니다. 잠시 후 다시 시도해주세요.");
             btn.innerText = originalText;
             btn.disabled = false;
         });
