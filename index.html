@@ -39,16 +39,6 @@
 <script>
     const scriptURL = 'https://script.google.com/macros/s/AKfycbxDchjYrdyKggqADRJBtrdpfLKurrHOdzHq0B8ZTmo1L5PwEAuoCTgYfF_U_fY8Q-N7rg/exec';
 
-    // 1. 초기 로드 및 팝업 알림
-    window.onload = function() {
-        // [수정] 첫 접속 시 모바일 주의사항 팝업
-        alert("⚠️ 투표 전 안내\n\n인스타그램이나 카카오톡에서 투표 오류가 발생할 경우, 화면 우측 상단 [점 3개] 버튼을 눌러 '다른 브라우저로 열기'를 선택해 주세요.");
-        updateVoteStatus();
-    };
-
-    let voteCount = parseInt(localStorage.getItem('myVoteCount')) || 0;
-    let votedIndices = JSON.parse(localStorage.getItem('votedIndices')) || [];
-
     const adList = [
         { id: "k3GnHTPEgJI", title: "[롯데리아] 롯데리아 또 이상한 거 한다!" },
         { id: "J7Da0vG0IFo", title: "[메치니코프] 착한발효유 메치니코프" },
@@ -82,29 +72,48 @@
         { id: "oNJZSoK3imc", title: "[우리은행] 세상에 없던 혜택의 기술, 삼성월렛머니 우리 통장&적금" }
     ];
 
-    function updateVoteStatus() {
-        document.getElementById('current-status').innerText = `${voteCount} / 5`;
+    let voteCount = parseInt(localStorage.getItem('myVoteCount')) || 0;
+    let votedIndices = JSON.parse(localStorage.getItem('votedIndices')) || [];
+
+    function renderApp() {
+        const app = document.getElementById('app');
+        app.innerHTML = ''; 
+
+        adList.forEach((ad, index) => {
+            const card = document.createElement('div');
+            card.className = 'ad-card';
+            const hasVoted = votedIndices.includes(index);
+            card.innerHTML = `
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/${ad.id}?rel=0" allowfullscreen></iframe>
+                </div>
+                <div class="info">
+                    <h3>${String(index + 1).padStart(2, '0')}. ${ad.title}</h3>
+                    <button class="vote-btn ${hasVoted ? 'voted' : ''}" id="btn-${index}" 
+                        onclick="submitVote('${ad.title}', ${index})" ${hasVoted ? 'disabled' : ''}>
+                        ${hasVoted ? '투표 완료' : '투표하기'}
+                    </button>
+                </div>
+            `;
+            app.appendChild(card);
+        });
+        updateVoteStatus();
     }
 
-    const app = document.getElementById('app');
-    adList.forEach((ad, index) => {
-        const card = document.createElement('div');
-        card.className = 'ad-card';
-        const hasVoted = votedIndices.includes(index);
-        card.innerHTML = `
-            <div class="video-container">
-                <iframe src="https://www.youtube.com/embed/${ad.id}?rel=0" allowfullscreen></iframe>
-            </div>
-            <div class="info">
-                <h3>${String(index + 1).padStart(2, '0')}. ${ad.title}</h3>
-                <button class="vote-btn ${hasVoted ? 'voted' : ''}" id="btn-${index}" 
-                    onclick="submitVote('${ad.title}', ${index})" ${hasVoted ? 'disabled' : ''}>
-                    ${hasVoted ? '투표 완료' : '투표하기'}
-                </button>
-            </div>
-        `;
-        app.appendChild(card);
-    });
+    function updateVoteStatus() {
+        const statusEl = document.getElementById('current-status');
+        if(statusEl) statusEl.innerText = `${voteCount} / 5`;
+    }
+
+    // [수정] 페이지 로드 시 이미지 내용을 담은 첫 번째 팝업 노출
+    window.onload = function() {
+        alert("격월로 진행되는 베스트 크리에이티브 온라인 투표에 오신 여러분 환영합니다.\n\n" +
+              "후보작은 2026년 1~2월에 온에어된 광고 약 4,000여 개를 선별하여 30개의 광고가 선정되었습니다.\n\n" +
+              "온라인 투표를 통해 10개 이하 광고를 선정, 내부 심사를 거쳐 최종 1편의 베스트 크리에이티브가 결정됩니다.\n" +
+              "최종 선정작은 2026년 대한민국광고대상에서 예심 없이 본심에 오르며, 해당 팀의 인터뷰는 ADZ 3/4월호에서 확인하실 수 있습니다.\n\n" +
+              "※ 투표기간: 2026. 3. 3(화) 12시 ~ 3. 8(일) 18시까지");
+        renderApp();
+    };
 
     function submitVote(title, index) {
         if (voteCount >= 5) {
@@ -117,7 +126,7 @@
             return;
         }
 
-        // [수정] 실시간 잔여 횟수를 보여주는 확인 팝업
+        // 실시간 잔여 횟수 확인 알림
         const remaining = 5 - voteCount;
         if (!confirm(`'${title}'에 투표하시겠습니까?\n\n(현재 투표 완료: ${voteCount}회 / 남은 투표권: ${remaining}회)`)) return;
 
@@ -127,7 +136,6 @@
 
         const finalURL = scriptURL + "?adTitle=" + encodeURIComponent(title) + "&timestamp=" + encodeURIComponent(new Date().toLocaleString());
 
-        // [핵심] fetch no-cors 모드로 모바일 차단 방지
         fetch(finalURL, { 
             mode: 'no-cors',
             cache: 'no-cache'
@@ -142,7 +150,7 @@
             location.reload(); 
         })
         .catch(err => {
-            alert("네트워크 연결이 불안정합니다. 크롬이나 사파리 브라우저를 사용해 주세요.");
+            alert("네트워크 연결이 불안정합니다. 일반 브라우저(Chrome/Safari) 이용을 권장합니다.");
             btn.innerText = "투표하기";
             btn.disabled = false;
         });
